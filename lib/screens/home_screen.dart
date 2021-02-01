@@ -2,6 +2,7 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tube/blocs/videos_bloc.dart';
 import 'package:flutter_tube/delegates/data_search.dart';
+import 'package:flutter_tube/widgets/video_tile.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -13,7 +14,7 @@ class HomeScreen extends StatelessWidget {
           child: Image.asset('images/youtube_logo.png'),
         ),
         elevation: 0,
-        backgroundColor: Colors.black87,
+        backgroundColor: Color.fromRGBO(40, 40, 40, 0.4),
         actions: [
           Align(
             alignment: Alignment.center,
@@ -35,12 +36,16 @@ class HomeScreen extends StatelessWidget {
           )
         ],
       ),
+      backgroundColor: Color.fromRGBO(40, 40, 40, 0.4),
       body: StreamBuilder(
         stream: BlocProvider.getBloc<VideosBloc>().outVideos,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
-              itemBuilder: null,
+              itemBuilder: (context, index) {
+                return VideoTile(snapshot.data[index]);
+              },
+              itemCount: snapshot.data.length,
             );
           } else {
             return Container();

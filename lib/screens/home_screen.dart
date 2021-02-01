@@ -7,6 +7,8 @@ import 'package:flutter_tube/widgets/video_tile.dart';
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final videoBloc = BlocProvider.getBloc<VideosBloc>();
+
     return Scaffold(
       appBar: AppBar(
         title: Container(
@@ -30,7 +32,7 @@ class HomeScreen extends StatelessWidget {
               String result =
                   await showSearch(context: context, delegate: DataSearch());
               if (result != null) {
-                BlocProvider.getBloc<VideosBloc>().inSearch.add(result);
+                videoBloc.inSearch.add(result);
               }
             },
           )
@@ -38,14 +40,31 @@ class HomeScreen extends StatelessWidget {
       ),
       backgroundColor: Color.fromRGBO(40, 40, 40, 0.4),
       body: StreamBuilder(
-        stream: BlocProvider.getBloc<VideosBloc>().outVideos,
+        initialData: [],
+        stream: videoBloc.outVideos,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
               itemBuilder: (context, index) {
-                return VideoTile(snapshot.data[index]);
+                if (index < snapshot.data.length) {
+                  return VideoTile(snapshot.data[index]);
+                } else if (index > 1) {
+                  videoBloc.inSearch.add(null);
+                  return Container(
+                    height: 40,
+                    width: 40,
+                    alignment: Alignment.center,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Color.fromRGBO(255, 0, 0, 0.4),
+                      ),
+                    ),
+                  );
+                } else {
+                  return Container();
+                }
               },
-              itemCount: snapshot.data.length,
+              itemCount: snapshot.data.length + 1,
             );
           } else {
             return Container();

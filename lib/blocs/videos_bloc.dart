@@ -8,13 +8,13 @@ class VideosBloc implements BlocBase {
   Api api;
   List<Video> videos;
 
-  final StreamController _streamController = StreamController();
+  final StreamController<List<Video>> _streamController = StreamController<List<Video>>();
 
   Stream get outVideos => _streamController.stream;
 
-  final StreamController _searchStreamController = StreamController();
+  final StreamController<String> _searchStreamController = StreamController<String>();
 
-  Sink get inSearch => _streamController.sink;
+  Sink get inSearch => _searchStreamController.sink;
 
   VideosBloc() {
     api = Api();
@@ -23,6 +23,7 @@ class VideosBloc implements BlocBase {
 
   void _search(String search) async {
     videos = await api.search(search);
+    _streamController.sink.add(videos);
   }
 
   @override

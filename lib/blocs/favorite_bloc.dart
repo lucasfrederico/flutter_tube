@@ -3,13 +3,13 @@ import 'dart:convert';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter_tube/models/video.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class FavoriteBloc implements BlocBase {
   Map<String, Video> _favorites = {};
 
-  final StreamController<Map<String, Video>> _favController =
-      StreamController.broadcast();
+  final BehaviorSubject<Map<String, Video>> _favController = BehaviorSubject();
 
   Stream<Map<String, Video>> get outFav => _favController.stream;
 
